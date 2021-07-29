@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.soft.consume.service.models.TeacherRequest;
 import com.soft.consume.service.models.TeacherResponse;
 
 import lombok.AllArgsConstructor;
 
 @Service
-
 public class ConsumeService {
 	
 	private RestTemplate restTemplate;
@@ -25,6 +25,11 @@ public class ConsumeService {
 	public TeacherResponse consumeGetTeacherById(long id) {
 		String url = URL + "/id/"+id;
 		return restTemplate.getForObject(url, TeacherResponse.class);
+	}
+	
+	public TeacherResponse consumePostTeacher(TeacherRequest teacherRequest) {
+		String url = URL ;
+		return restTemplate.postForObject(url,teacherRequest, TeacherResponse.class);
 	}
 
 }
