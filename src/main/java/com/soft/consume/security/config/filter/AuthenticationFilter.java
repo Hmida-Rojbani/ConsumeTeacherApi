@@ -1,8 +1,7 @@
-package com.soft.consume.security.config;
+package com.soft.consume.security.config.filter;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -21,21 +20,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soft.consume.security.service.UserService;
 import com.soft.consume.security.ui.model.LoginRequestModel;
 import com.soft.consume.security.ui.model.UserDTO;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.soft.consume.security.util.TokenProvider;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	
 	private UserService usersService;
 	private Environment environment;
+	private TokenProvider jwtUtil;
 	
 	public AuthenticationFilter(UserService usersService, 
 			Environment environment, 
-			AuthenticationManager authenticationManager) {
+			AuthenticationManager authenticationManager,
+			TokenProvider jwtUtil) {
 		this.usersService = usersService;
 		this.environment = environment;
 		super.setAuthenticationManager(authenticationManager);
+		this.jwtUtil= jwtUtil;
 	}
 	
 	@Override
@@ -66,11 +66,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     	String email = ((User) auth.getPrincipal()).getUsername();
     	UserDTO userDetails = usersService.findUserByEmail(email);
     	
-        String token = Jwts.builder()
-                .setSubject(userDetails.getUserId() + "  and Role =" + userDetails.getName())
-                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(environment.getProperty("token.expiration_time"))))
-                .signWith(SignatureAlgorithm.HS512, environment.getProperty("token.secret") )
-                .compact();
+        String token = jwtUtil.generateToken(auth);
         
         res.addHeader("token", "Bearer "+token);
         res.addHeader("userId", userDetails.getUserId());

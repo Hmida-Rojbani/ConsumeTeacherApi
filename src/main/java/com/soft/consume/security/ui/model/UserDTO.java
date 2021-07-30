@@ -1,5 +1,7 @@
 package com.soft.consume.security.ui.model;
 
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,5 +18,7 @@ public class UserDTO {
 	private String userId;
 	
 	private String password;
+	
+	private Set<String> roles;
 
 }
