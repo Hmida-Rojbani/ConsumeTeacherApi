@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.soft.consume.security.data.entity.RoleEntity;
 import com.soft.consume.security.data.repos.RoleRepository;
@@ -35,10 +38,11 @@ public class ConsumeTeacherApiApplication {
                 new RoleEntity(3, "USER", "Cannot controle anything")
         ).collect(Collectors.toList());
         roleRepos.saveAll(users);
+        initUsers();
 
     }
     
-    @PostConstruct
+    
     private void initUsers() {
         userService.saveUserToDB(new UserDTO("hmida", "hmida@gmail.com", "", "12345", 
         		new HashSet<>(Arrays.asList("SUPER_ADMIN","ADMIN"))));
@@ -51,5 +55,16 @@ public class ConsumeTeacherApiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ConsumeTeacherApiApplication.class, args);
 	}
+	
+	 @Bean
+		public WebMvcConfigurer corsConfigurer() {
+			return new WebMvcConfigurer() {
+				@Override
+				public void addCorsMappings(CorsRegistry registry) {
+					registry.addMapping("/*").allowedHeaders("*").allowedOrigins("http://localhost:4200").allowedMethods("*")
+					.allowCredentials(true);
+				}
+			};
+		}
 
 }

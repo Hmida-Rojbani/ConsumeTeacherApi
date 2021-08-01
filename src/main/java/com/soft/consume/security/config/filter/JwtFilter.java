@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,21 +22,18 @@ import com.soft.consume.security.util.TokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 
-@Component
 
 public class JwtFilter extends OncePerRequestFilter {
 
-
+		
+	
+	@Autowired
 	private TokenProvider jwtTokenUtil;
+	@Autowired
     private UserService service;
     
     
-    
-    public JwtFilter(TokenProvider jwtTokenUtil, UserService service) {
-		super();
-		this.jwtTokenUtil = jwtTokenUtil;
-		this.service = service;
-	}
+
 
 
 	@Value("${jwt.header.string}")
@@ -51,7 +49,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String username = null;
         String authToken = null;
         if (header != null && header.startsWith(TOKEN_PREFIX)) {
-            authToken = header.replace(TOKEN_PREFIX,"");
+            authToken = header.substring(7);
             try {
                 username = jwtTokenUtil.getUsernameFromToken(authToken);
             } catch (IllegalArgumentException e) {
