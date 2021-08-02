@@ -55,6 +55,10 @@ public class UserService implements UserDetailsService {
 		userEntity.setHashedPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
 		userEntity.setUserId(UUID.randomUUID().toString());
 		// change to Set Role
+		if(userDTO.getRoles()== null) {
+			userDTO.setRoles(new HashSet<>());
+			userDTO.getRoles().add("USER");
+		}
 		userEntity.setRoles(userDTO.getRoles().stream().map(roleName -> roleService.findRoleByName(roleName))
 				.collect(Collectors.toSet()));
 		userRepository.save(userEntity);

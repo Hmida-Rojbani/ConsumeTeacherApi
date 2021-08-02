@@ -39,7 +39,7 @@ public class ConsumeTeacherApiApplication {
                 new RoleEntity(4, "USER", "Cannot controle anything")
         ).collect(Collectors.toList());
         roleRepos.saveAll(users);
-        initUsers();
+        initUsers(); 
 
     }
     
