@@ -34,8 +34,9 @@ public class ConsumeTeacherApiApplication {
     public void initRoles() {
         List<RoleEntity> users = Stream.of(
                 new RoleEntity(1, "SUPER_ADMIN", "Can controle anything"),
-                new RoleEntity(2, "ADMIN", "have some controle anything"),
-                new RoleEntity(3, "USER", "Cannot controle anything")
+                new RoleEntity(2, "ADMIN", "Can controle anything"),
+                new RoleEntity(3, "MODERATOR", "have some controle anything"),
+                new RoleEntity(4, "USER", "Cannot controle anything")
         ).collect(Collectors.toList());
         roleRepos.saveAll(users);
         initUsers();
